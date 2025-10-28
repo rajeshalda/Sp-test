@@ -1,0 +1,635 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.helloWorld {
+  overflow: hidden;
+  padding: 1.5em;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 400px;
+
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+}
+
+.headerCard {
+  background: white;
+  border-radius: 12px;
+  padding: 2em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #0078d4;
+}
+
+.teamsCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #6264a7;
+
+  h3 {
+    color: #6264a7;
+    margin-bottom: 1em;
+  }
+}
+
+.interactiveCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #16c60c;
+
+  h3 {
+    color: #16c60c;
+    margin-bottom: 1em;
+  }
+}
+
+.contentCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #605e5c;
+
+  h3 {
+    color: #605e5c;
+    margin-bottom: 1em;
+  }
+}
+
+.welcome {
+  text-align: center;
+
+  h2 {
+    color: #0078d4;
+    margin: 1em 0 0.5em 0;
+    font-size: 1.8em;
+  }
+}
+
+.welcomeImage {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+}
+
+.environmentInfo {
+  background: #f3f9fd;
+  padding: 0.8em;
+  border-radius: 6px;
+  margin: 1em 0;
+  color: #106ebe;
+  font-weight: 500;
+}
+
+.propertyInfo {
+  background: #fff4ce;
+  padding: 0.8em;
+  border-radius: 6px;
+  margin: 1em 0;
+  color: #8a6914;
+}
+
+.counterSection {
+  text-align: center;
+
+  p {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+  }
+}
+
+.counterDisplay {
+  background: #16c60c;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.primaryButton {
+  background: #0078d4;
+  color: white;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 6px;
+  margin: 0 0.5em;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #106ebe;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 120, 212, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.secondaryButton {
+  background: #f3f2f1;
+  color: #323130;
+  border: 1px solid #d2d0ce;
+  padding: 0.8em 1.5em;
+  border-radius: 6px;
+  margin: 0 0.5em;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #edebe9;
+    border-color: #c8c6c4;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.description {
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: #605e5c;
+  margin-bottom: 1.5em;
+}
+
+.links {
+  margin-top: 1em;
+
+  li {
+    margin-bottom: 0.5em;
+
+    &:hover {
+      transform: translateX(5px);
+      transition: transform 0.2s ease;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: "[theme:link, default:#03787c]";
+    color: var(--link);
+    font-weight: 500;
+    display: inline-block;
+    padding: 0.3em 0;
+
+    &:hover {
+      text-decoration: underline;
+      color: "[theme:linkHovered, default: #014446]";
+      color: var(--linkHovered);
+    }
+  }
+}
+
+// Teams-specific styles
+.teamsSection {
+  min-height: 200px;
+}
+
+.loadingState {
+  text-align: center;
+  padding: 2em;
+  color: #605e5c;
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f3f2f1;
+    border-top: 3px solid #6264a7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1em;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorState {
+  text-align: center;
+  padding: 2em;
+
+  .errorMessage {
+    color: #d13438;
+    margin-bottom: 1em;
+    padding: 1em;
+    background: #fdf3f4;
+    border-radius: 6px;
+    border-left: 4px solid #d13438;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2em;
+}
+
+.channelsList {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.teamGroup {
+  margin-bottom: 1.5em;
+}
+
+.teamName {
+  color: #6264a7;
+  margin: 0 0 0.8em 0;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #e1dfdd;
+  font-size: 1.1em;
+}
+
+.channelsGroup {
+  margin-left: 1em;
+}
+
+.channelContainer {
+  margin-bottom: 0.3em;
+}
+
+.channelItem {
+  display: flex;
+  align-items: center;
+  padding: 0.6em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 0.8em;
+    transform: scale(1.2);
+    accent-color: #6264a7;
+  }
+
+  .channelName {
+    font-weight: 500;
+    color: #323130;
+    margin-right: 0.8em;
+  }
+
+  .channelDesc {
+    color: #605e5c;
+    font-size: 0.9em;
+    font-style: italic;
+    margin-right: 0.8em;
+  }
+}
+
+.showFilesBtn {
+  margin-left: auto;
+  cursor: pointer;
+  padding: 0.2em 0.5em;
+  font-size: 1.1em;
+
+  &:hover {
+    background: #e1dfdd;
+    border-radius: 4px;
+  }
+}
+
+.filesList {
+  margin-left: 2em;
+  margin-top: 0.5em;
+  padding: 0.5em;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #6264a7;
+}
+
+.filesUL {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fileItem, .folderItem {
+  display: flex;
+  align-items: center;
+  padding: 0.3em 0;
+  color: #323130;
+  font-size: 0.9em;
+
+  input[type="checkbox"] {
+    margin-right: 0.5em;
+    transform: scale(1.1);
+    accent-color: #6264a7;
+  }
+}
+
+.folderName {
+  cursor: pointer;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+
+  &:hover {
+    background: #e1dfdd;
+  }
+}
+
+.subFolderContent {
+  margin-left: 1.5em;
+  margin-top: 0.5em;
+  padding: 0.5em;
+  background: #f0f0f0;
+  border-radius: 4px;
+  border-left: 2px solid #6264a7;
+}
+
+.subFilesContainer {
+  margin: 0;
+  padding: 0;
+}
+
+.subFileItem {
+  display: flex;
+  align-items: center;
+  padding: 0.4em 0;
+  color: #323130;
+  font-size: 0.85em;
+  border-bottom: 1px solid #e8e8e8;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 0.5em;
+    transform: scale(1.1);
+    accent-color: #6264a7;
+  }
+
+  span {
+    word-break: break-all;
+  }
+}
+
+// Tree View styles
+.teamsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.viewToggle {
+  display: flex;
+  gap: 0.5em;
+}
+
+.toggleButton {
+  background: #f3f2f1;
+  color: #323130;
+  border: 1px solid #d2d0ce;
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #edebe9;
+    border-color: #c8c6c4;
+  }
+
+  &.active {
+    background: #6264a7;
+    color: white;
+    border-color: #6264a7;
+
+    &:hover {
+      background: #5a5da6;
+    }
+  }
+}
+
+.treeContainer {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #e1dfdd;
+  border-radius: 6px;
+  background: white;
+}
+
+.treeItem {
+  border-bottom: 1px solid #f8f9fa;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.treeItemContent {
+  display: flex;
+  align-items: center;
+  padding: 0.4em 0.6em;
+  min-height: 32px;
+}
+
+.expandIcon {
+  width: 16px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  color: #605e5c;
+  font-size: 0.8em;
+  margin-right: 0.5em;
+
+  &:hover {
+    color: #323130;
+  }
+}
+
+.itemIcon {
+  margin-right: 0.5em;
+  font-size: 1em;
+  min-width: 20px;
+  text-align: center;
+}
+
+.treeItemLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+
+  input[type="checkbox"] {
+    margin-right: 0.6em;
+    transform: scale(1.1);
+    accent-color: #6264a7;
+  }
+
+  .itemName {
+    font-weight: 500;
+    color: #323130;
+    margin-right: 0.6em;
+  }
+
+  .itemDesc {
+    color: #605e5c;
+    font-size: 0.85em;
+    font-style: italic;
+    margin-right: 0.6em;
+  }
+
+  .loadingIcon {
+    color: #6264a7;
+    animation: spin 1s linear infinite;
+    font-size: 0.9em;
+  }
+}
+
+// Sync Interface Styles
+.syncInterface {
+  .syncHeader {
+    margin-bottom: 1.5em;
+
+    .siteInfo {
+      background: #f3f9fd;
+      padding: 1em;
+      border-radius: 6px;
+      margin-bottom: 1em;
+      border-left: 4px solid #0078d4;
+
+      p {
+        margin: 0;
+        color: #106ebe;
+
+        a {
+          color: #0078d4;
+          text-decoration: none;
+          font-weight: 500;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    .syncStatus {
+      background: #f8f9fa;
+      padding: 1em;
+      border-radius: 6px;
+      border-left: 4px solid #6264a7;
+
+      p {
+        margin: 0 0 0.5em 0;
+        color: #323130;
+        font-size: 0.95em;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        strong {
+          color: #6264a7;
+          font-weight: 600;
+        }
+      }
+
+      .errorMessage {
+        color: #d13438;
+        background: #fdf3f4;
+        padding: 0.5em;
+        border-radius: 4px;
+        margin-top: 0.5em;
+        font-size: 0.9em;
+        border: 1px solid #f9c7ca;
+      }
+    }
+  }
+
+  .syncControls {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
+
+    button {
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+
+        &:hover {
+          transform: none;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+.teamsListContainer {
+  h4 {
+    color: #6264a7;
+    margin: 0 0 1em 0;
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+}
+
+.teamsList {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 1em;
+  border-left: 4px solid #16c60c;
+}
+
+.teamItem {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 0;
+  border-bottom: 1px solid #e1dfdd;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .teamIcon {
+    margin-right: 0.8em;
+    font-size: 1.1em;
+  }
+
+  .teamName {
+    font-weight: 500;
+    color: #323130;
+    margin-right: 0.8em;
+    flex: 1;
+  }
+
+  .fileCount {
+    color: #605e5c;
+    font-size: 0.9em;
+    font-style: italic;
+  }
+}
