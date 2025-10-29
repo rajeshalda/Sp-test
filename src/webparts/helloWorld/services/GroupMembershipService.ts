@@ -175,7 +175,6 @@ export class GroupMembershipService {
     try {
       const teams = await this.getConnectedTeams();
       const userFiles: IUserFile[] = [];
-      const currentUser = await this._getCurrentUser();
 
       for (const team of teams) {
         try {
@@ -187,17 +186,8 @@ export class GroupMembershipService {
 
           const allFiles = await this._getAllFilesFromDrive(driveResponse.id, 'root');
 
-          const userModifiedFiles = allFiles.filter(file => {
-            const isModifiedByUser = file.lastModifiedBy?.user?.displayName === currentUser.displayName ||
-                                    file.lastModifiedBy?.user?.email === currentUser.mail ||
-                                    file.lastModifiedBy?.user?.id === currentUser.id;
-            const isCreatedByUser = file.createdBy?.user?.displayName === currentUser.displayName ||
-                                  file.createdBy?.user?.email === currentUser.mail ||
-                                  file.createdBy?.user?.id === currentUser.id;
-            return isModifiedByUser || isCreatedByUser;
-          });
-
-          const mappedFiles: IUserFile[] = userModifiedFiles.map(file => ({
+          // Map all files from the team (no user filtering)
+          const mappedFiles: IUserFile[] = allFiles.map(file => ({
             id: file.id,
             name: file.name,
             webUrl: file.webUrl,
@@ -366,12 +356,6 @@ export class GroupMembershipService {
     }
   }
 
-  private async _getCurrentUser(): Promise<any> {
-    return await this.graphClient
-      .api('/me')
-      .select('id,displayName,mail,userPrincipalName')
-      .get();
-  }
 
   private async _getAllFilesFromDrive(driveId: string, itemId: string, path: string = ''): Promise<any[]> {
     try {

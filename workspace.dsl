@@ -38,23 +38,52 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
             }
         }
 
+        # Define the On-Premises Download Service (Separate System)
+        downloadService = softwareSystem "Teams File Download Service" "On-premises Python service that downloads files from SharePoint to local storage for RAG processing with delta sync capability" {
+
+            # Container: Download Service Application
+            downloadApp = container "Download Service Application" "Python application that orchestrates file download from SharePoint to on-premise storage" "Python 3.8+, MSAL, Microsoft Graph API" {
+                authModule = component "Azure AD Authenticator" "Handles Azure AD authentication using MSAL with client credentials flow" "Python/MSAL" "Completed"
+                graphClient = component "Graph API Client" "Manages Microsoft Graph API interactions with retry logic and error handling" "Python/Requests" "Completed"
+                fileDownloader = component "File Downloader" "Coordinates file discovery, delta sync, and download operations" "Python" "Completed"
+                deltaSync = component "Delta Sync Tracker" "Tracks downloaded files using JSON state file to avoid re-downloading unchanged files" "JSON State Manager" "Completed"
+                mainOrchestrator = component "Main Orchestrator" "Entry point that orchestrates authentication, discovery, and download workflow" "Python" "Completed"
+                logger = component "Logging System" "Dual logging to console and file with comprehensive error tracking" "Python Logging" "Completed"
+            }
+
+            # Container: Local File Storage
+            localStorage = container "Local File Storage" "File system storage for downloaded files organized by Team folders" "File System" {
+                description "Stores downloaded files with preserved folder structure and sync state JSON file"
+            }
+        }
+
         # Define relationships between people and systems
         user -> fileSyncSystem "Uses to sync Teams files to personal SharePoint"
         user -> microsoft365 "Authenticates with"
         administrator -> azureAd "Approves API permissions"
         administrator -> fileSyncSystem "Deploys and configures"
+        administrator -> downloadService "Deploys and schedules on-premises"
 
         # System-to-system relationships
         fileSyncSystem -> microsoft365 "Retrieves teams, files, and performs sync operations using"
         fileSyncSystem -> azureAd "Authenticates users via"
+        downloadService -> microsoft365 "Downloads files from SharePoint via"
+        downloadService -> azureAd "Authenticates with application permissions via"
+        downloadService -> sharepointOnline "Reads files from Teams File Sync folder"
 
-        # Container-to-container relationships
+        # Container-to-container relationships (ICL System)
         webPart -> backgroundSync "Controls and monitors"
         webPart -> microsoftGraph "Queries teams and files via"
         webPart -> sharepointOnline "Creates folders and copies files to"
         webPart -> azureAd "Authenticates via"
         backgroundSync -> microsoftGraph "Periodically syncs files via"
         backgroundSync -> sharepointOnline "Copies files to"
+
+        # Container-to-container relationships (Download Service System)
+        downloadApp -> azureAd "Authenticates with application permissions via"
+        downloadApp -> microsoftGraph "Downloads files via"
+        downloadApp -> sharepointOnline "Reads files from Teams File Sync folder"
+        downloadApp -> localStorage "Saves downloaded files to"
 
         # Component relationships within Web Part
         uiComponent -> stateManager "Reads state from"
@@ -81,6 +110,24 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
         uiComponent -> eventHandler "Captures user interactions from"
         spfxContext -> groupService "Provides Graph client to"
 
+        # Download Service component relationships (within downloadApp container)
+        mainOrchestrator -> authModule "Initiates authentication"
+        mainOrchestrator -> graphClient "Provides authenticated client to"
+        mainOrchestrator -> fileDownloader "Orchestrates download process via"
+        mainOrchestrator -> logger "Logs operations via"
+        authModule -> mainOrchestrator "Returns access token to"
+        fileDownloader -> graphClient "Uses to discover and download files"
+        fileDownloader -> deltaSync "Checks sync state and updates"
+        fileDownloader -> logger "Logs progress and errors to"
+        graphClient -> logger "Logs API responses to"
+        deltaSync -> fileDownloader "Provides file state information to"
+
+        # Download Service to external systems
+        authModule -> azureAd "Requests access token from"
+        graphClient -> microsoftGraph "Makes API calls to"
+        fileDownloader -> localStorage "Writes downloaded files to"
+        deltaSync -> localStorage "Reads/writes sync_state.json to"
+
         # Deployment
         deploymentEnvironment = deploymentEnvironment "Production" {
             deploymentNode "User's Browser" "Web Browser" "Chrome, Edge, Safari" {
@@ -88,6 +135,13 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
                     webPartInstance = containerInstance webPart
                     backgroundSyncInstance = containerInstance backgroundSync
                 }
+            }
+
+            deploymentNode "On-Premise Server" "Windows/Linux Server" "Local Infrastructure" {
+                deploymentNode "Python Runtime" "Python 3.8+" "Runtime Environment" {
+                    downloadAppInstance = containerInstance downloadApp
+                }
+                localStorageInstance = containerInstance localStorage
             }
 
             deploymentNode "Microsoft Cloud" "Microsoft Azure" "Cloud Infrastructure" {
@@ -102,17 +156,11 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
     }
 
     views {
-        # COMPREHENSIVE OVERVIEW - All-in-one diagram
-        container fileSyncSystem "ComprehensiveOverview" {
+        # COMPREHENSIVE OVERVIEW - All-in-one diagram showing both systems
+        systemLandscape "ComprehensiveOverview" {
             include *
-            include user
-            include administrator
-            include azureAd
-            include microsoftGraph
-            include teamsBackend
-            include sharepointOnline
             autoLayout
-            description "Comprehensive overview showing users, system containers, and Microsoft 365 integration in one view"
+            description "Comprehensive overview showing ICL system, on-premises download service, users, and Microsoft 365 integration"
         }
 
         # System Context diagram
@@ -141,6 +189,27 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
             include *
             autoLayout
             description "Component diagram showing the background sync process components"
+        }
+
+        # System Context for Download Service
+        systemContext downloadService "DownloadServiceContext" {
+            include *
+            autoLayout
+            description "System Context diagram for On-Premises Teams File Download Service"
+        }
+
+        # Container diagram for Download Service
+        container downloadService "DownloadServiceContainers" {
+            include *
+            autoLayout
+            description "Container diagram showing the Download Service application and local storage"
+        }
+
+        # Component diagram for Download Service
+        component downloadApp "DownloadServiceComponents" {
+            include *
+            autoLayout
+            description "Component diagram showing the Teams File Download Service components and workflow"
         }
 
         # Deployment diagram
@@ -188,6 +257,30 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
             description "Sequence showing what happens when user enables file sync"
         }
 
+        # Dynamic diagram - File Download Flow (NEW)
+        dynamic downloadApp "FileDownloadFlow" "Illustrates the complete file download workflow from SharePoint to on-premise storage" {
+            mainOrchestrator -> logger "Logs: Starting file download service"
+            mainOrchestrator -> authModule "Initiates Azure AD authentication"
+            authModule -> mainOrchestrator "Returns access token"
+            mainOrchestrator -> graphClient "Creates authenticated Graph client"
+            mainOrchestrator -> fileDownloader "Starts file discovery and download"
+            fileDownloader -> graphClient "Calls getUserDrive()"
+            fileDownloader -> graphClient "Calls getFolderByPath('Teams File Sync')"
+            fileDownloader -> graphClient "Recursively discovers all files"
+            fileDownloader -> deltaSync "Loads sync state from JSON"
+            deltaSync -> fileDownloader "Returns list of previously downloaded files"
+            fileDownloader -> deltaSync "Filters new and modified files"
+            fileDownloader -> logger "Logs: Found X files, Y need download"
+            fileDownloader -> graphClient "Downloads each file with progress tracking"
+            graphClient -> fileDownloader "Streams file content"
+            fileDownloader -> deltaSync "Updates sync state with downloaded files"
+            fileDownloader -> logger "Logs: Sync state saved to disk"
+            fileDownloader -> mainOrchestrator "Returns download statistics"
+            mainOrchestrator -> logger "Logs: Download complete summary"
+            autoLayout
+            description "Sequence showing the complete file download workflow including delta sync"
+        }
+
         # Styling
         styles {
             element "Person" {
@@ -231,6 +324,12 @@ workspace "DASL - Infra Central Library (ICL)" "C4 Model for SPFx Infra Central 
                 opacity 50
                 background #ffcc99
                 stroke #ff6600
+                color #000000
+            }
+            element "Completed" {
+                background #90EE90
+                stroke #228B22
+                strokeWidth 3
                 color #000000
             }
 
