@@ -38,7 +38,7 @@
     "scriptResources": {
       "hello-world-web-part": {
         "type": "path",
-        "path": "hello-world-web-part_47d117b359713484cbbf.js"
+        "path": "hello-world-web-part_410539e55506ecb6f7d4.js"
       },
       "@microsoft/sp-core-library": {
         "type": "component",

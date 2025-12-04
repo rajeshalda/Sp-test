@@ -68,6 +68,7 @@ export declare class GroupMembershipService {
     getSyncStatus(): ISyncStatus;
     toggleSync(enabled: boolean): Promise<void>;
     startBackgroundSync(): Promise<void>;
+    private _getCurrentUser;
     private _getAllFilesFromDrive;
     private _copyFileToUserSite;
     private _groupFilesByTeam;
