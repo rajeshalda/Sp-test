@@ -28,6 +28,7 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
     private _startBackgroundSync;
     private _stopBackgroundSync;
     protected onInit(): Promise<void>;
+    private _getSyncPreferenceFromStorage;
     private _getEnvironmentMessage;
     protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void;
     protected get dataVersion(): Version;

@@ -59,7 +59,12 @@ export declare class GroupMembershipService {
     private graphClient;
     private _userSite;
     private _syncStatus;
+    private readonly DELAY_BETWEEN_CALLS;
+    private readonly MAX_RETRIES;
+    private readonly INITIAL_RETRY_DELAY;
     constructor(graphClient: MSGraphClientV3);
+    private _delay;
+    private _retryWithBackoff;
     getUserGroupMemberships(): Promise<IGroupMembership[]>;
     getConnectedTeams(): Promise<IConnectedTeam[]>;
     getUserFilesInTeams(): Promise<IUserFile[]>;
@@ -68,7 +73,6 @@ export declare class GroupMembershipService {
     getSyncStatus(): ISyncStatus;
     toggleSync(enabled: boolean): Promise<void>;
     startBackgroundSync(): Promise<void>;
-    private _getCurrentUser;
     private _getAllFilesFromDrive;
     private _copyFileToUserSite;
     private _groupFilesByTeam;

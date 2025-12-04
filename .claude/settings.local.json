@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gulp clean:*)",
+      "Bash(gulp bundle:*)",
+      "Bash(gulp package-solution:*)",
+      "Bash(unzip:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

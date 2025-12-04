@@ -315,14 +315,35 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
     return this._getEnvironmentMessage().then(message => {
       this._environmentMessage = message;
 
+      // Don't auto-initialize on page load to prevent immediate API throttling
+      // User must click "Initialize File Sync" button to start
+      // Only restore background sync if it was previously enabled
       if (this.context.msGraphClientFactory) {
-        this._initializeSync().then(() => {
-          if (this._syncStatus?.isEnabled) {
-            this._startBackgroundSync();
-          }
-        }).catch(console.error);
+        const syncEnabled = this._getSyncPreferenceFromStorage();
+        if (syncEnabled) {
+          // Initialize the service but don't trigger sync immediately
+          this.context.msGraphClientFactory.getClient('3').then(graphClient => {
+            this._groupService = new GroupMembershipService(graphClient);
+            this._syncStatus = this._groupService.getSyncStatus();
+            // Start background sync on a delay to avoid initial load throttling
+            setTimeout(() => {
+              if (this._syncStatus?.isEnabled) {
+                this._startBackgroundSync();
+              }
+            }, 5000); // 5 second delay
+          }).catch(console.error);
+        }
       }
     });
+  }
+
+  private _getSyncPreferenceFromStorage(): boolean {
+    try {
+      const stored = localStorage.getItem('teamsFileSyncEnabled');
+      return stored === 'true';
+    } catch {
+      return false;
+    }
   }
 
 
